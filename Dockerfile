@@ -1,5 +1,7 @@
 FROM php:8.3-apache
 
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         default-mysql-client \
@@ -35,11 +37,12 @@ COPY docker/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY docker/php-production.ini /usr/local/etc/php/conf.d/zz-moodle-production.ini
 COPY docker/entrypoint.sh /usr/local/bin/moodle-entrypoint
 
-RUN chmod +x /usr/local/bin/moodle-entrypoint \
+RUN composer install --no-dev --classmap-authoritative --no-interaction --no-progress \
+    && chmod +x /usr/local/bin/moodle-entrypoint \
     && mkdir -p /var/www/moodledata \
     && chown -R www-data:www-data /var/www/html /var/www/moodledata
 
-ENV MOODLE_DATABASE_TYPE=mysqli \
+ENV MOODLE_DATABASE_TYPE=mariadb \
     MOODLE_DATABASE_HOST=moodle-db \
     MOODLE_DATABASE_NAME=moodle \
     MOODLE_DATABASE_USER=moodle \

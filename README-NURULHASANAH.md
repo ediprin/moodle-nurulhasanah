@@ -11,6 +11,7 @@ Repository ini adalah baseline Moodle terpisah untuk integrasi SIAKAD.
 | Release awal | `5.1.4+ (Build: 20260427)` |
 | Web root | `public` |
 | Theme tambahan | `theme_moove` |
+| Database type container | `mariadb` |
 
 ## Batas Git
 

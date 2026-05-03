@@ -3,7 +3,7 @@ services:
     image: ${MOODLE_APP_IMAGE:-ghcr.io/ediprin/moodle-nurulhasanah:staging}
     restart: unless-stopped
     environment:
-      MOODLE_DATABASE_TYPE: ${MOODLE_DATABASE_TYPE:-mysqli}
+      MOODLE_DATABASE_TYPE: ${MOODLE_DATABASE_TYPE:-mariadb}
       MOODLE_DATABASE_HOST: moodle-db
       MOODLE_DATABASE_NAME: ${MOODLE_DATABASE_NAME:-moodle}
       MOODLE_DATABASE_USER: ${MOODLE_DATABASE_USER:-moodle}
@@ -35,7 +35,7 @@ services:
     command: >
       bash -lc 'while true; do php /var/www/html/admin/cli/cron.php; sleep ${MOODLE_CRON_INTERVAL_SECONDS:-60}; done'
     environment:
-      MOODLE_DATABASE_TYPE: ${MOODLE_DATABASE_TYPE:-mysqli}
+      MOODLE_DATABASE_TYPE: ${MOODLE_DATABASE_TYPE:-mariadb}
       MOODLE_DATABASE_HOST: moodle-db
       MOODLE_DATABASE_NAME: ${MOODLE_DATABASE_NAME:-moodle}
       MOODLE_DATABASE_USER: ${MOODLE_DATABASE_USER:-moodle}

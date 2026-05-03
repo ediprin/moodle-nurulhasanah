@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-: "${MOODLE_DBTYPE:=${MOODLE_DATABASE_TYPE:-mysqli}}"
+: "${MOODLE_DBTYPE:=${MOODLE_DATABASE_TYPE:-mariadb}}"
 : "${MOODLE_DBHOST:=${MOODLE_DATABASE_HOST:-moodle-db}}"
 : "${MOODLE_DBNAME:=${MOODLE_DATABASE_NAME:-moodle}}"
 : "${MOODLE_DBUSER:=${MOODLE_DATABASE_USER:-moodle}}"
@@ -32,7 +32,7 @@ unset($CFG);
 global $CFG;
 $CFG = new stdClass();
 
-$CFG->dbtype = getenv('MOODLE_DBTYPE') ?: (getenv('MOODLE_DATABASE_TYPE') ?: 'mysqli');
+$CFG->dbtype = getenv('MOODLE_DBTYPE') ?: (getenv('MOODLE_DATABASE_TYPE') ?: 'mariadb');
 $CFG->dblibrary = 'native';
 $CFG->dbhost = getenv('MOODLE_DBHOST') ?: (getenv('MOODLE_DATABASE_HOST') ?: 'moodle-db');
 $CFG->dbname = getenv('MOODLE_DBNAME') ?: (getenv('MOODLE_DATABASE_NAME') ?: 'moodle');
