@@ -26,6 +26,13 @@ fi
 mkdir -p "$MOODLE_DATAROOT"
 chown -R www-data:www-data "$MOODLE_DATAROOT"
 
+if [ ! -f /var/www/html/vendor/autoload.php ] || [ ! -f /var/www/html/vendor/composer/installed.php ]; then
+    echo "Moodle Composer dependencies are missing from the image." >&2
+    exit 1
+fi
+
+echo "Moodle runtime check: dbtype=${MOODLE_DBTYPE}, vendor=present, zend.exception_ignore_args=$(php -r 'echo ini_get(\"zend.exception_ignore_args\") ?: \"0\";')"
+
 cat > /var/www/html/config.php <<'PHP'
 <?php
 unset($CFG);

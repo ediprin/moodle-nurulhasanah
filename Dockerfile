@@ -37,7 +37,10 @@ COPY docker/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY docker/php-production.ini /usr/local/etc/php/conf.d/zz-moodle-production.ini
 COPY docker/entrypoint.sh /usr/local/bin/moodle-entrypoint
 
-RUN composer install --no-dev --classmap-authoritative --no-interaction --no-progress \
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --classmap-authoritative --no-interaction --no-progress \
+    && test -f /var/www/html/vendor/autoload.php \
+    && test -f /var/www/html/vendor/composer/installed.php \
+    && php -r "if (ini_get('zend.exception_ignore_args') !== '1') { fwrite(STDERR, 'zend.exception_ignore_args is not enabled'.PHP_EOL); exit(1); }" \
     && chmod +x /usr/local/bin/moodle-entrypoint \
     && mkdir -p /var/www/moodledata \
     && chown -R www-data:www-data /var/www/html /var/www/moodledata
@@ -49,7 +52,7 @@ ENV MOODLE_DATABASE_TYPE=mariadb \
     MOODLE_DBPREFIX=mdl_ \
     MOODLE_WWWROOT=http://localhost \
     MOODLE_DATAROOT=/var/www/moodledata \
-    MOODLE_REVERSE_PROXY=true \
+    MOODLE_REVERSE_PROXY=false \
     MOODLE_SSL_PROXY=true
 
 EXPOSE 80
