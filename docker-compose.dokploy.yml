@@ -1,0 +1,81 @@
+services:
+  moodle-app:
+    image: ${MOODLE_APP_IMAGE:-ghcr.io/ediprin/moodle-nurulhasanah:staging}
+    restart: unless-stopped
+    environment:
+      MOODLE_DATABASE_TYPE: ${MOODLE_DATABASE_TYPE:-mysqli}
+      MOODLE_DATABASE_HOST: moodle-db
+      MOODLE_DATABASE_NAME: ${MOODLE_DATABASE_NAME:-moodle}
+      MOODLE_DATABASE_USER: ${MOODLE_DATABASE_USER:-moodle}
+      MOODLE_DATABASE_PASSWORD: ${MOODLE_DATABASE_PASSWORD:?Set MOODLE_DATABASE_PASSWORD}
+      MOODLE_DBPREFIX: ${MOODLE_DBPREFIX:-mdl_}
+      MOODLE_WWWROOT: ${MOODLE_WWWROOT:?Set MOODLE_WWWROOT}
+      MOODLE_DATAROOT: /var/www/moodledata
+      MOODLE_REVERSE_PROXY: "true"
+      MOODLE_SSL_PROXY: "true"
+      MOODLE_AUTO_INSTALL: ${MOODLE_AUTO_INSTALL:-false}
+      MOODLE_LANG: ${MOODLE_LANG:-id}
+      MOODLE_SITE_FULLNAME: ${MOODLE_SITE_FULLNAME:-E-Learning Nurul Hasanah}
+      MOODLE_SITE_SHORTNAME: ${MOODLE_SITE_SHORTNAME:-E-Learning}
+      MOODLE_ADMIN_USER: ${MOODLE_ADMIN_USER:-admin}
+      MOODLE_ADMIN_PASSWORD: ${MOODLE_ADMIN_PASSWORD:-}
+      MOODLE_ADMIN_EMAIL: ${MOODLE_ADMIN_EMAIL:-admin@example.test}
+    volumes:
+      - moodledata:/var/www/moodledata
+    depends_on:
+      moodle-db:
+        condition: service_healthy
+    networks:
+      - moodle_public
+      - moodle_backend
+
+  moodle-cron:
+    image: ${MOODLE_APP_IMAGE:-ghcr.io/ediprin/moodle-nurulhasanah:staging}
+    restart: unless-stopped
+    command: >
+      bash -lc 'while true; do php /var/www/html/admin/cli/cron.php; sleep ${MOODLE_CRON_INTERVAL_SECONDS:-60}; done'
+    environment:
+      MOODLE_DATABASE_TYPE: ${MOODLE_DATABASE_TYPE:-mysqli}
+      MOODLE_DATABASE_HOST: moodle-db
+      MOODLE_DATABASE_NAME: ${MOODLE_DATABASE_NAME:-moodle}
+      MOODLE_DATABASE_USER: ${MOODLE_DATABASE_USER:-moodle}
+      MOODLE_DATABASE_PASSWORD: ${MOODLE_DATABASE_PASSWORD:?Set MOODLE_DATABASE_PASSWORD}
+      MOODLE_DBPREFIX: ${MOODLE_DBPREFIX:-mdl_}
+      MOODLE_WWWROOT: ${MOODLE_WWWROOT:?Set MOODLE_WWWROOT}
+      MOODLE_DATAROOT: /var/www/moodledata
+      MOODLE_REVERSE_PROXY: "true"
+      MOODLE_SSL_PROXY: "true"
+    volumes:
+      - moodledata:/var/www/moodledata
+    depends_on:
+      moodle-db:
+        condition: service_healthy
+    networks:
+      - moodle_backend
+
+  moodle-db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${MOODLE_DATABASE_NAME:-moodle}
+      MARIADB_USER: ${MOODLE_DATABASE_USER:-moodle}
+      MARIADB_PASSWORD: ${MOODLE_DATABASE_PASSWORD:?Set MOODLE_DATABASE_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MOODLE_DB_ROOT_PASSWORD:?Set MOODLE_DB_ROOT_PASSWORD}
+    volumes:
+      - moodle-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - moodle_backend
+
+volumes:
+  moodledata:
+  moodle-db-data:
+
+networks:
+  moodle_public:
+  moodle_backend:
+    internal: true
