@@ -9,7 +9,7 @@ set -euo pipefail
 : "${MOODLE_DBPREFIX:=mdl_}"
 : "${MOODLE_WWWROOT:=http://localhost}"
 : "${MOODLE_DATAROOT:=/var/www/moodledata}"
-: "${MOODLE_REVERSE_PROXY:=true}"
+: "${MOODLE_REVERSE_PROXY:=false}"
 : "${MOODLE_SSL_PROXY:=true}"
 : "${MOODLE_AUTO_INSTALL:=false}"
 : "${MOODLE_LANG:=id}"
@@ -51,7 +51,7 @@ $CFG->dataroot = getenv('MOODLE_DATAROOT') ?: '/var/www/moodledata';
 $CFG->admin = getenv('MOODLE_ADMIN_PATH') ?: 'admin';
 $CFG->directorypermissions = 02777;
 
-if ((getenv('MOODLE_REVERSE_PROXY') ?: 'true') === 'true') {
+if ((getenv('MOODLE_REVERSE_PROXY') ?: 'false') === 'true') {
     $CFG->reverseproxy = true;
 }
 

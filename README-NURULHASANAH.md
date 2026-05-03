@@ -62,6 +62,8 @@ Untuk database kosong, aktifkan sementara:
 ```env
 MOODLE_AUTO_INSTALL=true
 MOODLE_ADMIN_PASSWORD=...
+MOODLE_REVERSE_PROXY=false
+MOODLE_SSL_PROXY=true
 ```
 
 Setelah install pertama selesai dan admin bisa login, ubah lagi:

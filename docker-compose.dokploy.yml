@@ -11,8 +11,8 @@ services:
       MOODLE_DBPREFIX: ${MOODLE_DBPREFIX:-mdl_}
       MOODLE_WWWROOT: ${MOODLE_WWWROOT:?Set MOODLE_WWWROOT}
       MOODLE_DATAROOT: /var/www/moodledata
-      MOODLE_REVERSE_PROXY: "true"
-      MOODLE_SSL_PROXY: "true"
+      MOODLE_REVERSE_PROXY: ${MOODLE_REVERSE_PROXY:-false}
+      MOODLE_SSL_PROXY: ${MOODLE_SSL_PROXY:-true}
       MOODLE_AUTO_INSTALL: ${MOODLE_AUTO_INSTALL:-false}
       MOODLE_LANG: ${MOODLE_LANG:-id}
       MOODLE_SITE_FULLNAME: ${MOODLE_SITE_FULLNAME:-E-Learning Nurul Hasanah}
@@ -43,8 +43,8 @@ services:
       MOODLE_DBPREFIX: ${MOODLE_DBPREFIX:-mdl_}
       MOODLE_WWWROOT: ${MOODLE_WWWROOT:?Set MOODLE_WWWROOT}
       MOODLE_DATAROOT: /var/www/moodledata
-      MOODLE_REVERSE_PROXY: "true"
-      MOODLE_SSL_PROXY: "true"
+      MOODLE_REVERSE_PROXY: ${MOODLE_REVERSE_PROXY:-false}
+      MOODLE_SSL_PROXY: ${MOODLE_SSL_PROXY:-true}
     volumes:
       - moodledata:/var/www/moodledata
     depends_on:
